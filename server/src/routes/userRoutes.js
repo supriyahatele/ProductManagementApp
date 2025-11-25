@@ -1,15 +1,22 @@
 const express = require('express');
-const { loginValidationRules, registerValidationRules } = require('../middlewares/authValidations');
-const { register, login } = require('../controllers/userController');
+const { loginValidationRules, registerValidationRules, forgotPasswordValidationRules, resetPasswordValidationRules, updateUserValidation } = require('../middlewares/authValidations');
+const { register, login, forgotPassword, resetPassword, getUserById, updateUser } = require('../controllers/userController');
+const { auth } = require('../middlewares/authMiddleware');
 const userRouter = express.Router();
 
 
 // POST /api/register
-// The validation chain runs BEFORE the register controller function
 userRouter.post('/register', registerValidationRules, register);
 
 // POST /api/login
-// The validation chain runs BEFORE the login controller function
 userRouter.post('/login', loginValidationRules, login);
+
+userRouter.post('/forget-password', forgotPasswordValidationRules, forgotPassword);
+
+userRouter.put('/reset-password/:token', resetPasswordValidationRules, resetPassword);
+
+userRouter.get('/profile',auth, getUserById);
+
+userRouter.put('/profile',auth, updateUserValidation, updateUser);
 
 module.exports = userRouter;
